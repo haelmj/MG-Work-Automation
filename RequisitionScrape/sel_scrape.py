@@ -57,7 +57,7 @@ try:
 
     with open('mcn_scrape.csv', 'w', newline='', encoding='utf-8') as csv_file:
         csv_writer = csv.writer(csv_file)
-
+        
         element, column_name = getColumnNames('DataTables_Table_0') 
         csv_writer.writerow(column_name)
         rows = getRows(element)

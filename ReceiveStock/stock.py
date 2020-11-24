@@ -30,27 +30,46 @@ class ReceiveStock():
         enter.send_keys(Keys.RETURN)
     
     def getRows(self, element):
+        """Retrieve all rows on current page"""
         row_group = element.find_element_by_tag_name('tbody')
         rows = row_group.find_elements_by_tag_name('tr')
         return rows
     
     def rowContent(self, tr):
+        """Get the content of a row"""
         row_list = tr.find_elements_by_tag_name('td')
         row_content = [td.get_attribute('textContent') for td in row_list]
         return row_content
 
     def find_issued_stock(self):
         """Navigate to Request Stock Tab, and find stock columns that are issued"""
-        self.login()
-        element = WebDriverWait(self.driver, 10).until(
-            EC.presence_of_element_located((By.LINK_TEXT, 'Request Stock'))).click()
-        time.sleep(5)
-        rows = self.getRows(element)
-        
-        for tr in rows:
-            view = tr.find_element_by_tag_name('a')
-            view_link =view.get_attribute('href')
+        try:
+            self.login()
+            element = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.LINK_TEXT, 'Request Stock'))).click()
+            time.sleep(5)
+            rows = self.getRows(element)
             
-            row_content = self.rowContent(tr)
-            row_content.pop()
+            for tr in rows:
+                view = tr.find_element_by_tag_name('a')
+                view_link =view.get_attribute('href')
+                
+                row_content = self.rowContent(tr)
+                if row_content[2] == 'Issued':
+                    self.driver.execute_script(f"window.open('{view_link}')")
+                    view_window = self.driver.window_handles[1]
+                    self.driver.switch_to_window(view_window)
+                    
+                    # add code to click the 'mark as received' button
+                    
+                    self.driver.close()
+                    self.driver.switch_to_window(self.stock_window)
+                    time.sleep(5) 
+        except Exception as e:
+            print(e)
+            self.driver.close()
+        finally:
+            self.driver.close()
 
+
+ReceiveStock().find_issued_stock()
