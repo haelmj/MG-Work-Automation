@@ -2,6 +2,9 @@
 project_env/
 .vscode/
 
+# generated data files
+*.csv
+*.xlsm
 
 # log files
 *.log
