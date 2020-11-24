@@ -1,0 +1,11 @@
+# virtual environment
+project_env/
+.vscode/
+
+
+# log files
+*.log
+
+# miscellanous folders
+Requisitions/
+Testing/
