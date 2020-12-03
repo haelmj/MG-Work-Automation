@@ -33,6 +33,7 @@ class ReceiveStock():
         """Retrieve all rows on current page"""
         row_group = element.find_element_by_tag_name('tbody')
         rows = row_group.find_elements_by_tag_name('tr')
+        print(rows)
         return rows
     
     def rowContent(self, tr):
@@ -45,9 +46,12 @@ class ReceiveStock():
         """Navigate to Request Stock Tab, and find stock columns that are issued"""
         try:
             self.login()
-            element = WebDriverWait(self.driver, 10).until(
+            WebDriverWait(self.driver, 10).until(
                 EC.presence_of_element_located((By.LINK_TEXT, 'Request Stock'))).click()
             time.sleep(5)
+            element = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.ID, 'DataTables_Table_0'))
+            )
             rows = self.getRows(element)
             
             for tr in rows:
@@ -58,13 +62,16 @@ class ReceiveStock():
                 if row_content[2] == 'Issued':
                     self.driver.execute_script(f"window.open('{view_link}')")
                     view_window = self.driver.window_handles[1]
-                    self.driver.switch_to_window(view_window)
+                    self.driver.switch_to.window(view_window)
                     
                     # add code to click the 'mark as received' button
+                    WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, 'Mark As Received'))).click()
                     
                     self.driver.close()
-                    self.driver.switch_to_window(self.stock_window)
-                    time.sleep(5) 
+                    self.driver.switch_to.window(self.stock_window)
+                    time.sleep(5)
+                else:
+                    continue 
         except Exception as e:
             print(e)
             self.driver.close()
