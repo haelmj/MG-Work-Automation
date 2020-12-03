@@ -75,7 +75,7 @@ try:
                 
                 driver.execute_script(f"window.open('{view_link}')")
                 view_window = driver.window_handles[1]
-                driver.switch_to_window(view_window)
+                driver.switch_to.window(view_window)
                 
                 with open(f'Requisitions/{r_id}.csv', 'w', newline='', encoding='utf-8') as r_file:
                     r_writer = csv.writer(r_file)
@@ -88,7 +88,7 @@ try:
                         r_writer.writerow(content)
                 
                 driver.close()
-                driver.switch_to_window(stock_window)
+                driver.switch_to.window(stock_window)
                 time.sleep(5)    
 
             
